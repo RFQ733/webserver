@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Title Page</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<!-- CSS -->
+        <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> -->
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body class="container">
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" 
+            data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">RFQCDA</a>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="./index.html">首页</a></li>
+              <li><a href="./tutorial.html">操作说明</a></li>
+              <li> <a href="./predict.html">预测</a> </li><li> <a href="./datasets.html">数据</a> </li>
+              
+            </ul>
+            
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">Link</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="#">Separated link</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+        <div class="container">
+                
+            
+            <div style="flex-direction: row;"  >
+               <img src="./科研大图83.png" height="500px" alt="">
+                    
+                
+               <p>CircRNA is being discovered to play an increasing number of roles in the occurrence of disease.</p> 
+               <h3>Accurately identifying those CircRNAs associated with diseases is crucial for further CircRNA research. </h3>
+               In recent years, an increasing number of computational methods have been proposed to predict CircRNA-Disease Associations (CDA).
+                Here we propose a novel method for predicting CDA, which comprehensively considers generating linear features using Non-negative Matrix Factorization (NMF) and obtaining non-linear features
+                 using Adversarially Regularized Variational Graph Autoencoder (ARVGA), finally employ an EXTRA Trees classifier to predict CDA. In the gold standard dataset CircR2Disease,
+                  our model achieved a prediction accuracy of 94.8% and an AUC of 0.984. Furthermore, ablation experiments and classifier experiments fully demonstrate the effectiveness 
+                  and robustness of the features extracted by our model. Independent dataset test results validate generalization ability of our model. Our case study results indicate that
+                 19 different circRNAs among the top 20 predicted score of CDA pairs have been confirmed in the relevant literature to
+                be associated with Hepatocellular Carcinoma. These results indicate that our model can be used as a useful prediction tool to predict possible CircRNAs for complex diseases.
+                
+            </div>
+            
+
+
+            
+        </div>
+        
+        
+    
+        
+        <div class="panel panel-default  navbar navbar-default navbar-fixed-bottom" >
+              
+              <div class="panel-footer" bgcolor="red" align="center">
+                    POWERED BY CUMT Wang Bio Lab
+                </div>
+        </div>
+        
+
+
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </body>
+</html>
