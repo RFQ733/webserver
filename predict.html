@@ -37,9 +37,9 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="./index.html">首页</a></li>
+              <li ><a href="./index.html">首页</a></li>
               <li><a href="./tutorial.html">操作说明</a></li>
-              <li> <a href="./predict.html">预测</a> </li><li> <a href="./datasets.html">数据</a> </li>
+              <li class="active"> <a href="./predict.html">预测</a> </li><li> <a href="./datasets.html">数据</a> </li>
               
             </ul>
             
@@ -151,9 +151,9 @@
             }  
       
               // 依次请求数据  
-              RNAlist =  await fetchData('/circRNAlist.json', RNAlist);  
-             diseaselist=  await fetchData('/diseaselist.json', diseaselist);  
-              allmatrix = await fetchData('/allmatrix.json', allmatrix);  
+              RNAlist =  await fetchData('/webserver/circRNAlist.json', RNAlist);  
+             diseaselist=  await fetchData('/webserver/diseaselist.json', diseaselist);  
+              allmatrix = await fetchData('/webserver/allmatrix.json', allmatrix);  
                 
                 var  RNAid = RNAlist.indexOf($("#circRNA_name")[0].value);
                 console.log( RNAlist)
