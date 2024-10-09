@@ -13,16 +13,13 @@
           #cy {
             font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
             font-size: 14px ; 
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 1;
+            
+           height: 700px;
+            
           }
          
         </style>
-        <script src="./threeD/cytoscape.min.js"></script>
+      
        
 <!-- CSS -->
         <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous"> -->
@@ -54,7 +51,8 @@
             <ul class="nav navbar-nav">
               <li ><a href="./index.html">首页</a></li>
               <li><a href="./tutorial.html">操作说明</a></li>
-              <li class="active"> <a href="./predict.html">预测</a> </li><li> <a href="./datasets.html">数据</a> </li>
+              <li class="active"> <a href="./predict.html">预测</a> </li>
+              <li> <a href="./datasets.html">数据</a> </li>
               
             </ul>
             
@@ -129,7 +127,6 @@
         <div id="cy"></div>
         
         
-    
         
         <div class="panel panel-default  navbar navbar-default navbar-fixed-bottom" >
               
@@ -146,7 +143,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
-        
+        <script src="./threeD/cytoscape.min.js"></script>
         <script>
            
             $(document).ready(function() {
@@ -170,9 +167,9 @@
             }  
       
               // 依次请求数据  
-              RNAlist =  await fetchData('/webserver/circRNAlist.json', RNAlist);  
-             diseaselist=  await fetchData('/webserver/diseaselist.json', diseaselist);  
-              allmatrix = await fetchData('/webserver/allmatrix.json', allmatrix);  
+              RNAlist =  await fetchData('circRNAlist.json', RNAlist);  
+             diseaselist=  await fetchData('diseaselist.json', diseaselist);  
+              allmatrix = await fetchData('allmatrix.json', allmatrix);  
                 
                 var  RNAid = RNAlist.indexOf($("#circRNA_name")[0].value);
                 console.log( RNAlist)
@@ -185,6 +182,7 @@
                     var  diseaseid = i;
                     var  score = RNAmatrix[i];
                     var  diseasename = diseaselist[diseaseid];
+                    console.log(" here is the disease name " , diseasename);
                     Rtable.push([diseasename, score]);
                 }
                 $("#res_table").html("");
@@ -195,10 +193,11 @@
                 var circ = RNAlist[RNAid]
                 var disease = []
                 var dis_score = []
-                for (var i = 0; i < RNAmatrix.length; i++) {
-                  disease.push(RNAmatrix[i][0])
-                  dis_score.push(RNAmatrix[i][1])
+                for (var i = 0; i < Rtable.length; i++) {
+                  disease.push(Rtable[i][0])
+                  dis_score.push(Rtable[i][1])
                 }
+               
 
                 var nod = []
                 nod.push(
@@ -216,9 +215,6 @@
                       data: {
                         id: disease[i],
                         label: disease[i],
-
-
-
                       }
                     }
                   )
