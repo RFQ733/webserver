@@ -1,0 +1,62 @@
+<!DOCTYPE>
+
+<html>
+<head>
+  <title>cytoscape demo</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+  <!-- <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    -->
+    <script src="./cytoscape.min.js"></script>
+
+  <script src="./calgraph.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var cy = window.cy = cytoscape({
+        container: document.getElementById('cy'),
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'content': 'data(id)',
+            'font-size': '8px'
+                
+            }
+          },
+          {
+            selector:"#"+circ,
+            style: {
+              'background-color': 'yellow',
+              'shape':"star"
+             
+            }
+          },
+
+          {
+            selector: 'edge',
+            style: {
+              'curve-style': 'bezier',
+              "font-size": "4px",
+              'target-arrow-shape': 'triangle',
+              'label': 'data(label)', // 显示边的标签
+            'text-justification': 'center', // 标签居中
+            'text-margin-y': '2px' // 标签与边的距离
+            }
+          }
+        ],
+        elements: {
+          nodes: nod,
+          edges: edg
+        },
+        layout:{ name: 'cose', 
+        nodeRepulsion: 7000 }
+        
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div id="cy"></div>
+</body>
+
+</html>

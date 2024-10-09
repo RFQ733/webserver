@@ -1,0 +1,128 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Dynamic 3D Graph Network with Three.js</title>  
+    <style>  
+        body { margin: 0; }  
+        canvas { display: block; }  
+        .input-container {  
+            position: absolute;  
+            top: 10px;  
+            left: 10px;  
+            background: rgba(255, 255, 255, 0.8);  
+            padding: 10px;  
+            border-radius: 5px;  
+        }  
+        textarea {  
+            width: 100%;  
+            height: 100px;  
+            margin-top: 10px;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="input-container">  
+        <h3>Nodes JSON</h3>  
+        <textarea id="nodesInput" placeholder="['x_node', 'y_node', 'a_node', 'b_node']"></textarea><br>  
+        <h3>Edges JSON</h3>  
+        <textarea id="edgesInput" placeholder="[[0,1],[1,2],[3,1]]"></textarea><br>  
+        <button onclick="createGraph()">Create Graph</button>  
+    </div>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>  
+    <script>  
+        let scene, camera, renderer;  
+  
+        function initThreeJS() {  
+            scene = new THREE.Scene();  
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);  
+            renderer = new THREE.WebGLRenderer();  
+            renderer.setSize(window.innerWidth, window.innerHeight);  
+            document.body.appendChild(renderer.domElement);  
+  
+            const ambientLight = new THREE.AmbientLight(0x404040);  
+            scene.add(ambientLight);  
+  
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  
+            directionalLight.position.set(5, 10, 7.5).normalize();  
+            scene.add(directionalLight);  
+  
+            camera.position.z = 20;  
+        }  
+  
+        function createGraph() {  
+            // Clear the previous scene  
+            while (scene.children.length > 0) {  
+                scene.remove(scene.children[0]);  
+            }  
+  
+            // Parse input JSON  
+            const nodesInput = document.getElementById('nodesInput').value;  
+            const edgesInput = document.getElementById('edgesInput').value;  
+            const nodes = JSON.parse(nodesInput);  
+            const edges = JSON.parse(edgesInput);  
+  
+            // Create nodes and edges  
+            const nodePositions = {}; // Store node positions by their names  
+            const nodeRadius = 1;  
+            const nodeColor = 0x0077ff;  
+            const edgeColor = 0x000000;  
+  
+            nodes.forEach((nodeName, index) => {  
+                // Randomly position nodes for demonstration (you can change this to a specific layout)  
+                const x = (Math.random() - 0.5) * 10;  
+                const y = (Math.random() - 0.5) * 10;  
+                const z = (Math.random() - 0.5) * 10;  
+                const node = createNode(x, y, z, nodeRadius, nodeColor);  
+                nodePositions[nodeName] = node.position.clone(); // Store the position  
+                node.name = nodeName; // Set a name for easy reference later  
+                scene.add(node);  
+            });  
+  
+            edges.forEach(([node1Index, node2Index]) => {  
+                // Convert indices to node names (assuming indices correspond to nodes array order)  
+                const nodeName1 = nodes[node1Index];  
+                const nodeName2 = nodes[node2Index];  
+  
+                // Find the corresponding nodes in the scene  
+                const node1 = scene.getObjectByName(nodeName1);  
+                const node2 = scene.getObjectByName(nodeName2);  
+                const edgeColor = "red";
+                if (node1 && node2) {  
+                    console.log(" here is node1 and node2 have edge ", node1 , node2 );
+                    createEdge(node1, node2, edgeColor);  
+                } else {  
+                    console.error(`Nodes ${nodeName1} or ${nodeName2} not found!`);  
+                }  
+            });  
+  
+            render();  
+        }  
+  
+        function createNode(x, y, z, radius, color) {  
+            const geometry = new THREE.SphereGeometry(radius, 32, 32);  
+            const material = new THREE.MeshBasicMaterial({ color: color });  
+            const sphere = new THREE.Mesh(geometry, material);  
+            sphere.position.set(x, y, z);  
+            return sphere;  
+        }  
+  
+        function createEdge(node1, node2, color) {  
+            const geometry = new THREE.BufferGeometry().setFromPoints([node1.position, node2.position]);  
+            const material = new THREE.LineBasicMaterial({ color: color });  
+            const line = new THREE.Line(geometry, material);  
+            scene.add(line);  
+            return line;  
+        }  
+  
+        function render() {  
+            requestAnimationFrame(render);  
+            renderer.render(scene, camera);  
+        }  
+  
+        // Initialize Three.js on page load  
+        window.onload = initThreeJS;  
+    </script>  
+</body>  
+</html>
