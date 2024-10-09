@@ -14,7 +14,7 @@
             font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
             font-size: 14px ; 
             
-           height: 700px;
+           height: 600px;
             
           }
          
@@ -87,18 +87,27 @@
                                 </div>
                             </div> -->
                             
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                               <label for="circRNA name" class="col-sm-2 control-label"> CircRNA 名称 </label>
+              
                               <div class="col-sm-5">
-                                <input type="text" name="circRNA_name" id="circRNA_name" value="hsa_circ_0000520" class="form-control" required="required">
+                                <input type="text" name="circRNA_name" id="circRNA_name" value="Circ_BEND6" class="form-control" required="required">
                                 </div>
+                            </div> -->
+                            <div class="form-group row">
+                                <label for="ccc"> circRNA list </label>
+                                
+                                <select name="circRNA_name" id="circRNA_name" class="form-control" required="required">
+                                  <option value=""></option>
+                                </select>
+                                
 
                             </div>
                             
                             <!-- <div class="form-group row">
                               <label for="circRNA name" class="col-sm-2 control-label"> 置信度 </label>
                               <div class="col-sm-5">
-                                <input type="number" name="score_cutoff" id="score_cutoff" class="form-control" required="required">
+                                < type="number" name="score_cutoff" id="score_cutoff" class="form-control" required="required">
                                 </div>
 
                             </div> -->
@@ -146,8 +155,26 @@
         <script src="./threeD/cytoscape.min.js"></script>
         <script>
            
-            $(document).ready(function() {
+            $(document).ready( async function() {
                 console.log('ready');
+                // 定义三个请求函数，每个都返回一个 Promise  
+              async function fetchData(url, array) {  
+                  return $.ajax({  
+                      url: url,  
+                      type: 'GET',  
+                      dataType: 'json'  
+                  }).then(function(data) {  
+                      array = data; 
+                      console.log(array);
+                      return data; 
+                  });  
+              }  
+              var RNAselectlist = await fetchData('circRNAlist.json', RNAselectlist);
+              console.log(RNAselectlist);
+              for (var i = 0; i < RNAselectlist.length; i++) {
+                $("#circRNA_name").append("<option value='"+RNAselectlist[i]+"'>"+RNAselectlist[i]+"</option>");
+              }
+
             });
             $("#submitbtn").click(async function() {
                 console.log('clicked');
@@ -181,10 +208,15 @@
                 for (var i = 0; i < RNAmatrix.length; i++) {
                     var  diseaseid = i;
                     var  score = RNAmatrix[i];
+                    score = score.toFixed(4);
                     var  diseasename = diseaselist[diseaseid];
                     console.log(" here is the disease name " , diseasename);
                     Rtable.push([diseasename, score]);
                 }
+                Rtable.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+                Rtable = Rtable.slice(0, 10);
                 $("#res_table").html("");
                 for (var i = 0; i < Rtable.length; i++) {
                     $("#res_table").append("<tr><td>"+Rtable[i][0]+"</td><td>"+Rtable[i][1]+"</td></tr>");
