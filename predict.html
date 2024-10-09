@@ -13,8 +13,8 @@
           #cy {
             font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
             font-size: 14px ; 
-            
-           height: 600px;
+            border: 5px solid #ccc;
+           height: 550px;
             
           }
          
@@ -121,6 +121,11 @@
             
         </div>
         
+     
+
+        <div id="cy"></div>
+        
+        
         <table class="table table-hover">
           <thead>
             <tr>
@@ -133,10 +138,6 @@
           </tbody>
         </table>
 
-        <div id="cy"></div>
-        
-        
-        
         <div class="panel panel-default  navbar navbar-default navbar-fixed-bottom" >
               
               <div class="panel-footer" bgcolor="red" align="center">
@@ -194,9 +195,10 @@
             }  
       
               // 依次请求数据  
-              RNAlist =  await fetchData('circRNAlist.json', RNAlist);  
-             diseaselist=  await fetchData('diseaselist.json', diseaselist);  
-              allmatrix = await fetchData('allmatrix.json', allmatrix);  
+                RNAlist =  await fetchData('circRNAlist.json', RNAlist);  
+                diseaselist=  await fetchData('diseaselist.json', diseaselist);  
+                allmatrix = await fetchData('allmatrix.json', allmatrix);  
+                var RNAname = $("#circRNA_name")[0].value;
                 
                 var  RNAid = RNAlist.indexOf($("#circRNA_name")[0].value);
                 console.log( RNAlist)
@@ -222,14 +224,15 @@
                     $("#res_table").append("<tr><td>"+Rtable[i][0]+"</td><td>"+Rtable[i][1]+"</td></tr>");
                 }
 
-                var circ = RNAlist[RNAid]
+                var circ = RNAname
+                console.log(circ, " is the rna NAMe ")
                 var disease = []
                 var dis_score = []
                 for (var i = 0; i < Rtable.length; i++) {
                   disease.push(Rtable[i][0])
                   dis_score.push(Rtable[i][1])
                 }
-               
+                
 
                 var nod = []
                 nod.push(
@@ -237,7 +240,7 @@
                     data: {
                       id: circ,
                       label: circ,
-                      color: "red",
+                      
                     }
                   }
                 )
@@ -268,7 +271,6 @@
 
                 }
 
-
                 var cy = window.cy = cytoscape({
                   container: document.getElementById('cy'),
                   style: [
@@ -280,20 +282,13 @@
 
                       }
                     },
-                    {
-                      selector: "#" + circ,
-                      style: {
-                        'background-color': 'yellow',
-                        'shape': "star"
-
-                      }
-                    },
+                    
 
                     {
                       selector: 'edge',
                       style: {
                         'curve-style': 'bezier',
-                        "font-size": "4px",
+                        "font-size": "6px",
                         'target-arrow-shape': 'triangle',
                         'label': 'data(label)', // 显示边的标签
                         'text-justification': 'center', // 标签居中
@@ -311,6 +306,29 @@
                   }
 
                 });
+                
+                cy.style()
+                .selector('edge')
+                .style({
+                  
+                  'transition-property': 'text-opacity', // 动效的属性
+                  'transition-duration': '3s' // 动效持续时间
+                })
+                .update();
+                cy.on('mouseover', 'node', function(event) {
+                    this.style({ 'text-opacity': '1' });
+                });
+
+                cy.on('mouseout', 'node', function(event) {
+                    this.style({ 'text-opacity': '0.5' });
+                });
+                cy.style().selector("#"+RNAname).style({
+                  'background-color': 'yellow',
+                  'shape': "star"
+                }).update();
+                
+
+
 
                   
                   
