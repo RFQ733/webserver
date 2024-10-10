@@ -233,12 +233,12 @@
                   dis_score.push(Rtable[i][1])
                 }
                 
-
+                var rand = Math.random();
                 var nod = []
                 nod.push(
                   {
                     data: {
-                      id: circ,
+                      id: rand,
                       label: circ,
                       
                     }
@@ -262,7 +262,7 @@
                     {
                       data: {
                         id: circ + disease[i],
-                        source: circ,
+                        source: rand,
                         target: disease[i],
                         label: dis_score[i]
                       }
@@ -270,6 +270,8 @@
                   )
 
                 }
+                // sleep 2s
+                await new Promise(resolve => setTimeout(resolve, 2000));
 
                 var cy = window.cy = cytoscape({
                   container: document.getElementById('cy'),
@@ -277,9 +279,12 @@
                     {
                       selector: 'node',
                       style: {
-                        'content': 'data(id)',
-                        'font-size': '8px'
-
+                        'content': 'data(label)',
+                        'font-size': '8px',
+                        // 设置颜色为深灰色
+                        
+                        // 直径为 20px
+                        
                       }
                     },
                     
@@ -292,7 +297,10 @@
                         'target-arrow-shape': 'triangle',
                         'label': 'data(label)', // 显示边的标签
                         'text-justification': 'center', // 标签居中
-                        'text-margin-y': '2px' // 标签与边的距离
+                        'text-margin-y': '2px', // 标签与边的距离
+                        "opacity":'data(label)',
+                        'line-color': 'red',
+                        'target-arrow-color': 'red',
                       }
                     }
                   ],
@@ -310,7 +318,7 @@
                 cy.style()
                 .selector('edge')
                 .style({
-                  
+                  // 设置边的颜色 为红色，可见度为 当前边的权重值
                   'transition-property': 'text-opacity', // 动效的属性
                   'transition-duration': '3s' // 动效持续时间
                 })
@@ -322,10 +330,12 @@
                 cy.on('mouseout', 'node', function(event) {
                     this.style({ 'text-opacity': '0.5' });
                 });
-                cy.style().selector("#"+RNAname).style({
+                cy.style().selector("#"+rand).style({
                   'background-color': 'yellow',
                   'shape': "star"
                 }).update();
+                // cy load 的时候就会自动从 线性布局到当前 cose布局
+                // 
                 
 
 
