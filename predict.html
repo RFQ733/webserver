@@ -122,14 +122,15 @@
                                 
 
                             </div>
+
                             
-                            <!-- <div class="form-group row">
-                              <label for="circRNA name" class="col-sm-2 control-label"> 置信度 </label>
+                            <div class="form-group row">
+                              <label for="disease_num" class="col-sm-2 control-label"> TOP association score 's disease number  </label>
                               <div class="col-sm-5">
-                                < type="number" name="score_cutoff" id="score_cutoff" class="form-control" required="required">
+                                <input type="number" placeholder="20" name="disease_num" id="disease_num" class="form-control" required="required">
                                 </div>
 
-                            </div> -->
+                            </div> 
                             <div class="form-group row"> 
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <button id="submitbtn" class="btn btn-primary">提交</button>
@@ -198,6 +199,7 @@
             });
             $("#submitbtn").click(async function() {
                 console.log('clicked');
+                $("#res_table").html("");
                 var RNAlist , diseaselist , allmatrix;
   
             // 定义三个请求函数，每个都返回一个 Promise  
@@ -239,11 +241,12 @@
                 Rtable.sort(function(a, b) {
                     return b[1] - a[1];
                 });
-                Rtable = Rtable.slice(0, 10);
-                $("#res_table").html("");
-                for (var i = 0; i < Rtable.length; i++) {
-                    $("#res_table").append("<tr><td>"+Rtable[i][0]+"</td><td>"+Rtable[i][1]+"</td></tr>");
-                }
+                var disease_num = $("#disease_num")[0].value;
+                Rtable = Rtable.slice(0,disease_num );
+                
+                // for (var i = 0; i < Rtable.length; i++) {
+                //     $("#res_table").append("<tr><td>"+Rtable[i][0]+"</td><td>"+Rtable[i][1]+"</td></tr>");
+                // }
                 var circ = RNAname
                 console.log(circ, " is the rna NAMe ")
                 var disease = []
@@ -264,6 +267,19 @@
                     }
                   }
                 )
+               var otdis = [] 
+               for( var i =0 ; i< diseaselist.length ; i++) {
+                console.log(" disease name is " + diseaselist[i]);
+                  otdis.push(
+                    {
+                      data: {
+                        id: rand,
+                        label: diseaselist[i]
+                      }
+                    }
+                  )
+              }
+              console.log(" otdis is " + otdis);
                 for (var i = 0; i < disease.length; i++) {
                   nod.push(
                     {
@@ -277,6 +293,9 @@
                 }
 
                 var edg = []
+                // nod.concat(otdis);
+               
+                console.log(nod);
                 // sleep 2s
                 // await new Promise(resolve => setTimeout(resolve, 2000));
                 var cy = window.cy = cytoscape({
@@ -287,10 +306,15 @@
                       style: {
                         'content': 'data(label)',
                         'font-size': '8px',
-                        // 设置颜色为深灰色
-                        
-                        // 直径为 20px
-                      }
+                      },
+                    
+                    },
+                    {
+                      selector:"othernodes",
+                      style: {
+                        'content': 'data(label)',
+                        'font-size': '8px',
+                      },
                     },
                     {
                       selector: 'edge',
@@ -309,7 +333,8 @@
                   ],
                   elements: {
                     nodes: nod,
-                    edges: edg
+                    edges: edg,
+                    // othernodes: otdis
                   },
                   layout: {
                     name: 'cose',
@@ -331,37 +356,43 @@
                 }
                 // 定义一个函数来添加边并应用动画  
 
-              function addEdgesWithAnimation(edges, delay) {  
-              edges.forEach((edgeData, index) => {  
-                setTimeout(() => {  
-                  // 添加边到图中  
-                  cy.add(edgeData);  
-                  // 可以在这里添加动画效果，例如改变颜色或透明度  
-                  cy.$('#' + edgeData.data.id).animate({  
-                    style: {  
-                      'line-color': '#FF0000', // 红色线条  
-                      'opacity': 1  ,
-                      // 设置边的颜色 为红色，可见度为 当前边的权重值
-                  'transition-property': 'text-opacity', // 动效的属性
-                  'transition-duration': '3s' // 动效持续时间
-                    }  
-                  }, {  
-                    duration: 500, // 动画持续时间  
-                    easing: 'ease-in-out'  
-                  });  
-                  
-                  // 更新图表布局（如果需要）  
-                  cy.layout({
-                    name: 'cose',
-                    nodeRepulsion: 7000
-                  }).run();  
+              async function addEdgesWithAnimation(edges, delay) {  
+                  edges.forEach((edgeData, index) => {  
+                  setTimeout(() => {  
+                    // 添加边到图中  
+                    cy.add(edgeData);  
+                    // 可以在这里添加动画效果，例如改变颜色或透明度  
+                    cy.$('#' + edgeData.data.id).animate({  
+                      style: {  
+                        'line-color': '#FF0000', // 红色线条  
+                        'opacity': edgeData.data.label  ,
+                        // 设置边的颜色 为红色，可见度为 当前边的权重值
+                    'transition-property': 'text-opacity', // 动效的属性
+                    'transition-duration': '3s' // 动效持续时间
+                      }  
+                    }, {  
+                      duration: 500, // 动画持续时间  
+                      easing: 'ease-in-out'  
+                    });  
+                    
+                    // 更新图表布局（如果需要）  
+                    cy.layout({
+                      name: 'cose',
+                      nodeRepulsion: 7000
+                    }).run();  
 
                 }, index * delay); // 延迟，使得每个边的添加有时间间隔  
               });  
               }  
               // 调用函数，设置每个边添加的时间间隔为300毫秒  
-              addEdgesWithAnimation(edg, 500);
-                
+              await addEdgesWithAnimation(edg, 500);
+              setTimeout( function() {
+                $("#res_table").html("");
+                for (var i = 0; i < Rtable.length; i++) {
+                    $("#res_table").append("<tr><td>"+Rtable[i][0]+"</td><td>"+Rtable[i][1]+"</td></tr>");
+                }
+              }, 500* edg.length);
+             
                 cy.style()
                 .selector('edge')
                 .style({
@@ -377,10 +408,12 @@
                 cy.on('mouseout', 'node', function(event) {
                     this.style({ 'text-opacity': '0.5' });
                 });
+                
                 cy.style().selector("#"+rand).style({
                   'background-color': 'yellow',
                   'shape': "star"
                 }).update();
+
               });
              
 
