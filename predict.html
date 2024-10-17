@@ -17,6 +17,25 @@
            height: 550px;
             
           }
+          .loader {
+            border: 2px solid #000;
+            border-top-color: transparent;
+            border-radius: 75%;
+            width: 50px;
+            height: 50px;
+            animation: circle infinite 0.75s linear ;
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+          }   
+          @keyframes circle {
+            0% {
+              transform: rotate(0);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
          
         </style>
       
@@ -122,8 +141,13 @@
         </div>
         
      
-
-        <div id="cy"></div>
+        <div>
+           <!-- 绝对布局居中 -->
+           <div id="loadding"   class="" ></div>
+        <div id="cy"">
+         
+        </div>
+      </div>
         
         
         <table class="table table-hover">
@@ -138,12 +162,7 @@
           </tbody>
         </table>
 
-        <div class="panel panel-default  navbar navbar-default navbar-fixed-bottom" >
-              
-              <div class="panel-footer" bgcolor="red" align="center">
-                    POWERED BY CUMT Wang Bio Lab
-                </div>
-        </div>
+         
         
 
 
@@ -199,11 +218,13 @@
                 diseaselist=  await fetchData('diseaselist.json', diseaselist);  
                 allmatrix = await fetchData('allmatrix.json', allmatrix);  
                 var RNAname = $("#circRNA_name")[0].value;
-                
                 var  RNAid = RNAlist.indexOf($("#circRNA_name")[0].value);
                 console.log( RNAlist)
                 console.log(" the value " + $("#circRNA_name")[0].value);
                 console.log(RNAid);
+              
+                
+
                 var  RNAmatrix = allmatrix[RNAid];
                 console.log(RNAmatrix);
                 var  Rtable = [] ;
@@ -223,7 +244,6 @@
                 for (var i = 0; i < Rtable.length; i++) {
                     $("#res_table").append("<tr><td>"+Rtable[i][0]+"</td><td>"+Rtable[i][1]+"</td></tr>");
                 }
-
                 var circ = RNAname
                 console.log(circ, " is the rna NAMe ")
                 var disease = []
@@ -257,22 +277,8 @@
                 }
 
                 var edg = []
-                for (var i = 0; i < disease.length; i++) {
-                  edg.push(
-                    {
-                      data: {
-                        id: circ + disease[i],
-                        source: rand,
-                        target: disease[i],
-                        label: dis_score[i]
-                      }
-                    }
-                  )
-
-                }
                 // sleep 2s
-                await new Promise(resolve => setTimeout(resolve, 2000));
-
+                // await new Promise(resolve => setTimeout(resolve, 2000));
                 var cy = window.cy = cytoscape({
                   container: document.getElementById('cy'),
                   style: [
@@ -284,11 +290,8 @@
                         // 设置颜色为深灰色
                         
                         // 直径为 20px
-                        
                       }
                     },
-                    
-
                     {
                       selector: 'edge',
                       style: {
@@ -314,6 +317,50 @@
                   }
 
                 });
+                for (var i = 0; i < disease.length; i++) {
+                  edg.push(
+                    {
+                      data: {
+                        id: circ + disease[i],
+                        source: rand,
+                        target: disease[i],
+                        label: dis_score[i]
+                      }
+                    }
+                  )
+                }
+                // 定义一个函数来添加边并应用动画  
+
+              function addEdgesWithAnimation(edges, delay) {  
+              edges.forEach((edgeData, index) => {  
+                setTimeout(() => {  
+                  // 添加边到图中  
+                  cy.add(edgeData);  
+                  // 可以在这里添加动画效果，例如改变颜色或透明度  
+                  cy.$('#' + edgeData.data.id).animate({  
+                    style: {  
+                      'line-color': '#FF0000', // 红色线条  
+                      'opacity': 1  ,
+                      // 设置边的颜色 为红色，可见度为 当前边的权重值
+                  'transition-property': 'text-opacity', // 动效的属性
+                  'transition-duration': '3s' // 动效持续时间
+                    }  
+                  }, {  
+                    duration: 500, // 动画持续时间  
+                    easing: 'ease-in-out'  
+                  });  
+                  
+                  // 更新图表布局（如果需要）  
+                  cy.layout({
+                    name: 'cose',
+                    nodeRepulsion: 7000
+                  }).run();  
+
+                }, index * delay); // 延迟，使得每个边的添加有时间间隔  
+              });  
+              }  
+              // 调用函数，设置每个边添加的时间间隔为300毫秒  
+              addEdgesWithAnimation(edg, 500);
                 
                 cy.style()
                 .selector('edge')
@@ -334,17 +381,8 @@
                   'background-color': 'yellow',
                   'shape': "star"
                 }).update();
-                // cy load 的时候就会自动从 线性布局到当前 cose布局
-                // 
-                
-
-
-
-                  
-                  
-
               });
-
+             
 
         </script>
 
